@@ -63,5 +63,21 @@ doctorRouter.delete("/delete/:id", async (req, res) => {
         res.status(400).send(err.message);
     }
 });
+doctorRouter.get("/", async (req, res) => {
+    try {
+        let query = {};
+        if (req.query.specialization) {
+            query.specialization = req.query.specialization;
+  }
+   
+        if (req.query.search) {
+            query.name = { $regex: req.query.search, $options: "i" };
+ }
+        const doctorData = await doctors.find(query).sort({ date: -1 }); 
+          res.status(200).json({ msg: "doctors", doctorData });
+    } catch (err) {
+        res.status(400).send(err.message);
+    }
+});
 
 module.exports=doctorRouter
